@@ -1,27 +1,29 @@
-#!groovy
-pipeline {
-	agent none
-      stages {
-        stage('Maven Clean') {
-            agent any
-          steps {
-            sh 'mvn clean'
-          }
+node {
+
+  try {
+  
+  stage('Code Checkout') { 
+      // Get some code from a GitHub repository
+      git 'https://github.com/rahmafeidi/depot-.git'
+
+   }
+   
+   stage('Unit Test') { 
+       withEnv(['PATH+EXTRA=/opt/apache-maven-3.6.3/bin']) {
+      // Get some code from a GitHub repository
+        sh 'mvn clean compile'
+        sh 'mvn test'
         }
-        stage('Maven Package'){
-            agent any
-            steps {
-                sh 'mvn package'
-            }
-        }
-        stage('Jar Run') {
-            agent any
-            steps {
-                withEnv(['JENKINS_NODE_COOKIE=dontkill']) {
-                    sh 'fuser -k 5000/tcp || true'
-                    sh 'nohup java -jar target/demo-0.0.1-SNAPSHOT.jar > log-greetings.log 2>&1 &'
-                }
-            }
-        }
-    }
+   }
+   
+     
+
+} catch(e) {
+	echo "Caught some exception"
+	
+  }  finally {
+	echo "Finally Block"
+	
+}
+    
 }
