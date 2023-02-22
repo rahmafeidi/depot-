@@ -5,7 +5,7 @@ node {
   stage('Code Checkout') { 
       // Get some code from a GitHub repository
       git 'https://github.com/rahmafeidi/depot-.git'
-
+  
    }
    
    stage('Unit Test') { 
